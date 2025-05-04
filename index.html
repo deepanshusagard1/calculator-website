@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator</title>
+  <title>Finance Calculator</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <h1>Finance Calculator</h1>
 
-    <!-- Attractive Tabs/Buttons for Choosing Calculator -->
+    <!-- Calculator Selection Tabs -->
     <div class="calculator-selector">
       <button id="compound-interest-tab" class="active-tab">Compound Interest</button>
       <button id="emi-tab">EMI Calculator</button>
+      <button id="currency-converter-tab">Currency Converter</button>
     </div>
 
-    <!-- Compound Interest Calculator Section -->
+    <!-- Compound Interest Calculator -->
     <div id="compound-interest-section" class="calculator">
       <h2>Compound Interest Calculator</h2>
       <label for="principal">Principal Amount ($):</label>
@@ -38,7 +39,7 @@
       <div id="result-interest"></div>
     </div>
 
-    <!-- EMI Calculator Section -->
+    <!-- EMI Calculator -->
     <div id="emi-calculator-section" class="calculator" style="display: none;">
       <h2>EMI Calculator</h2>
       <label for="loan-amount">Loan Amount ($):</label>
@@ -52,6 +53,34 @@
 
       <button id="calculate-emi-btn">Calculate</button>
       <div id="result-emi"></div>
+    </div>
+
+    <!-- Currency Converter -->
+    <div id="currency-converter-section" class="calculator" style="display: none;">
+      <h2>Currency Converter</h2>
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" placeholder="Enter amount" required>
+
+      <label for="from-currency">From Currency:</label>
+      <select id="from-currency">
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="INR">INR - Indian Rupee</option>
+        <option value="GBP">GBP - British Pound</option>
+	<option value="AUD">AUD - Australian Dollar</option>
+      </select>
+
+      <label for="to-currency">To Currency:</label>
+      <select id="to-currency">
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="INR">INR - Indian Rupee</option>
+        <option value="GBP">GBP - British Pound</option>
+	<option value="AUD">AUD - Australian Dollar</option>
+      </select>
+
+      <button id="convert-currency-btn">Convert</button>
+      <div id="converted-amount"></div>
     </div>
   </div>
 
