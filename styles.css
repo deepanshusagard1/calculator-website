@@ -101,6 +101,11 @@ body {
   padding-right: 30px; /* Space for arrow */
 }
 
+/* Currency Dropdown Specific Styling */
+#ci-currency {
+  margin-bottom: 15px;
+}
+
 /* General Button Styles */
 button {
   background: #ff5722;
