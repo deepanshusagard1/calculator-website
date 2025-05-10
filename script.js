@@ -38,6 +38,7 @@ document.getElementById("calculate-interest-btn").addEventListener("click", () =
 
   // Compound interest on initial principal
   let futureValue = principal * Math.pow(1 + rate / timesCompounded, timesCompounded * years);
+  const currency = document.getElementById("ci-currency").value;
 
   // Future value of monthly deposits
   const monthlyRate = rate / 12;
@@ -47,8 +48,8 @@ document.getElementById("calculate-interest-btn").addEventListener("click", () =
   }
 
   futureValue += totalDeposits;
-
-  document.getElementById("result-interest").textContent = `Future Value: $${futureValue.toFixed(2)}`;
+  document.getElementById("result-interest").textContent =
+  `Future Value: ${futureValue.toFixed(2)} ${currency}`;
 });
 
 // === EMI Calculator ===
@@ -66,7 +67,7 @@ document.getElementById("calculate-emi-btn").addEventListener("click", () => {
   const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanTenure)) /
               (Math.pow(1 + monthlyRate, loanTenure) - 1);
 
-  document.getElementById("result-emi").textContent = `EMI (Per Month): $${emi.toFixed(2)}`;
+  document.getElementById("result-emi").textContent = `EMI (Per Month): ${emi.toFixed(2)}`;
 });
 
 // === Currency Converter (Mock Rates) ===
