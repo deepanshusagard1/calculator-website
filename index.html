@@ -20,10 +20,17 @@
     <!-- Compound Interest Calculator -->
     <div id="compound-interest-section" class="calculator">
       <h2>Compound Interest Calculator</h2>
-      <label for="principal">Principal Amount ($):</label>
+      <label for="principal">Principal Amount :</label>
       <input type="number" id="principal" placeholder="Enter principal amount" required>
-
-      <label for="monthly-deposit">Monthly Deposit Amount ($):</label>
+      <label for="ci-currency">Select Currency:</label>
+      <select id="ci-currency">
+  	<option value="INR" selected>INR - Indian Rupee</option>
+  	<option value="USD">USD - US Dollar</option>
+  	<option value="EUR">EUR - Euro</option>
+  	<option value="GBP">GBP - British Pound</option>
+  	<option value="AUD">AUD - Australian Dollar</option>
+      </select>
+      <label for="monthly-deposit">Monthly Deposit Amount :</label>
       <input type="number" id="monthly-deposit" placeholder="Enter monthly deposit amount" required>
 
       <label for="rate">Annual Interest Rate (%):</label>
@@ -42,7 +49,7 @@
     <!-- EMI Calculator -->
     <div id="emi-calculator-section" class="calculator" style="display: none;">
       <h2>EMI Calculator</h2>
-      <label for="loan-amount">Loan Amount ($):</label>
+      <label for="loan-amount">Loan Amount :</label>
       <input type="number" id="loan-amount" placeholder="Enter loan amount" required>
 
       <label for="annual-rate">Annual Interest Rate (%):</label>
