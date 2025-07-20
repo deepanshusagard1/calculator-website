@@ -1,96 +1,292 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finance Calculator</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance Hub</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Finance Calculator</h1>
 
-    <!-- Calculator Selection Tabs -->
-    <div class="calculator-selector">
-      <button id="compound-interest-tab" class="active-tab">Compound Interest</button>
-      <button id="emi-tab">EMI Calculator</button>
-      <button id="currency-converter-tab">Currency Converter</button>
-    </div>
+  <!-- Header & Navigation -->
+  <header>
+    <h1>Finance Hub</h1>
+    <nav class="nav">
+      <button class="nav-btn active-tab" data-section="calculator-section">Calculators</button>
+      <button class="nav-btn" data-section="blog-section">Blogs</button>
+    </nav>
+  </header>
 
-    <!-- Compound Interest Calculator -->
-    <div id="compound-interest-section" class="calculator">
-      <h2>Compound Interest Calculator</h2>
-      <label for="principal">Principal Amount :</label>
-      <input type="number" id="principal" placeholder="Enter principal amount" required>
-      <label for="ci-currency">Select Currency:</label>
-      <select id="ci-currency">
-  	<option value="INR" selected>INR - Indian Rupee</option>
-  	<option value="USD">USD - US Dollar</option>
-  	<option value="EUR">EUR - Euro</option>
-  	<option value="GBP">GBP - British Pound</option>
-  	<option value="AUD">AUD - Australian Dollar</option>
-      </select>
-      <label for="monthly-deposit">Monthly Deposit Amount :</label>
-      <input type="number" id="monthly-deposit" placeholder="Enter monthly deposit amount" required>
-
-      <label for="rate">Annual Interest Rate (%):</label>
-      <input type="number" id="rate" step="0.01" placeholder="Enter annual interest rate" required>
-
-      <label for="times-compounded">Times Compounded Per Year:</label>
-      <input type="number" id="times-compounded" placeholder="e.g., 12 for monthly" required>
-
-      <label for="years">Number of Years:</label>
-      <input type="number" id="years" placeholder="Enter number of years" required>
-
-      <button id="calculate-interest-btn">Calculate</button>
-      <div id="result-interest"></div>
-    </div>
-
-    <!-- EMI Calculator -->
-    <div id="emi-calculator-section" class="calculator" style="display: none;">
-      <h2>EMI Calculator</h2>
-      <label for="loan-amount">Loan Amount :</label>
-      <input type="number" id="loan-amount" placeholder="Enter loan amount" required>
-
-      <label for="annual-rate">Annual Interest Rate (%):</label>
-      <input type="number" id="annual-rate" step="0.01" placeholder="Enter annual interest rate" required>
-
-      <label for="loan-tenure">Loan Tenure (in months):</label>
-      <input type="number" id="loan-tenure" placeholder="Enter loan tenure in months" required>
-
-      <button id="calculate-emi-btn">Calculate</button>
-      <div id="result-emi"></div>
-    </div>
-
-    <!-- Currency Converter -->
-    <div id="currency-converter-section" class="calculator" style="display: none;">
-      <h2>Currency Converter</h2>
-      <label for="amount">Amount:</label>
-      <input type="number" id="amount" placeholder="Enter amount" required>
-
-      <label for="from-currency">From Currency:</label>
-      <select id="from-currency">
-        <option value="USD">USD - US Dollar</option>
-        <option value="EUR">EUR - Euro</option>
-        <option value="INR">INR - Indian Rupee</option>
-        <option value="GBP">GBP - British Pound</option>
-	<option value="AUD">AUD - Australian Dollar</option>
-      </select>
-
-      <label for="to-currency">To Currency:</label>
-      <select id="to-currency">
-        <option value="USD">USD - US Dollar</option>
-        <option value="EUR">EUR - Euro</option>
-        <option value="INR">INR - Indian Rupee</option>
-        <option value="GBP">GBP - British Pound</option>
-	<option value="AUD">AUD - Australian Dollar</option>
-      </select>
-
-      <button id="convert-currency-btn">Convert</button>
-      <div id="converted-amount"></div>
-    </div>
+  <!-- Theme Toggle -->
+  <div class="theme-toggle">
+    <button id="theme-toggle-btn" class="theme-btn">
+      <span class="theme-icon">🌙</span>
+      <span class="theme-text">Dark</span>
+    </button>
   </div>
 
+  <main>
+    <!-- Calculator Section -->
+    <section id="calculator-section">
+      <!-- Calculator Tabs -->
+      <div class="calculator-selector">
+        <button class="calc-tab active-tab" data-calc="compound-interest">Compound Interest</button>
+        <button class="calc-tab" data-calc="emi">EMI Calculator</button>
+        <button class="calc-tab" data-calc="currency">Currency Converter</button>
+      </div>
+
+      <!-- Compound Interest -->
+      <div id="compound-interest" class="calculator active-calc">
+        <div class="calculator-container">
+          <h2>Compound Interest Calculator</h2>
+          <label for="principal">Principal Amount</label>
+          <input type="number" id="principal" placeholder="Enter principal amount" required />
+
+          <label for="monthly-deposit">Monthly Deposit Amount</label>
+          <input type="number" id="monthly-deposit" placeholder="Enter monthly deposit amount" required />
+
+          <label for="rate">Annual Interest Rate (%)</label>
+          <input type="number" id="rate" step="0.01" placeholder="Enter annual interest rate" required />
+
+          <label for="times-compounded">Times Compounded Per Year</label>
+          <input type="number" id="times-compounded" placeholder="e.g., 12 for monthly" required />
+
+          <label for="years">Number of Years</label>
+          <input type="number" id="years" placeholder="Enter number of years" required />
+
+          <label for="ci-currency">Select Currency</label>
+          <select id="ci-currency">
+            <option value="INR" selected>INR – Indian Rupee</option>
+            <option value="USD">USD – US Dollar</option>
+            <option value="EUR">EUR – Euro</option>
+            <option value="GBP">GBP – British Pound</option>
+            <option value="AUD">AUD – Australian Dollar</option>
+          </select>
+
+          <button id="calculate-interest-btn">Calculate</button>
+          <div id="result-interest"></div>
+        </div>
+      </div>
+
+      <!-- EMI Calculator -->
+      <div id="emi" class="calculator">
+        <div class="calculator-container">
+          <h2>EMI Calculator</h2>
+          <label for="loan-amount">Loan Amount</label>
+          <input type="number" id="loan-amount" placeholder="Enter loan amount" required />
+
+          <label for="annual-rate">Annual Interest Rate (%)</label>
+          <input type="number" id="annual-rate" step="0.01" placeholder="Enter annual interest rate" required />
+
+          <label for="loan-tenure">Loan Tenure (in months)</label>
+          <input type="number" id="loan-tenure" placeholder="Enter loan tenure in months" required />
+
+          <button id="calculate-emi-btn">Calculate</button>
+          <div id="result-emi"></div>
+        </div>
+      </div>
+
+      <!-- Currency Converter -->
+      <div id="currency" class="calculator">
+        <div class="calculator-container">
+          <h2>Currency Converter</h2>
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" placeholder="Enter amount" required />
+
+          <label for="from-currency">From Currency</label>
+          <select id="from-currency">
+            <option value="USD">USD – US Dollar</option>
+            <option value="EUR">EUR – Euro</option>
+            <option value="INR">INR – Indian Rupee</option>
+            <option value="GBP">GBP – British Pound</option>
+            <option value="AUD">AUD – Australian Dollar</option>
+          </select>
+
+          <label for="to-currency">To Currency</label>
+          <select id="to-currency">
+            <option value="USD">USD – US Dollar</option>
+            <option value="EUR">EUR – Euro</option>
+            <option value="INR">INR – Indian Rupee</option>
+            <option value="GBP">GBP – British Pound</option>
+            <option value="AUD">AUD – Australian Dollar</option>
+          </select>
+
+          <button id="convert-currency-btn">Convert</button>
+          <div id="converted-amount"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Section -->
+<section id="blog-section" class="hidden">
+  <h2>Finance Blogs</h2>
+  <div class="blog-container">
+    <article class="blog-post">
+      <h4>Part 1: Budgeting — The Foundation of Financial Wellness</h4>
+      <p>
+        <strong>Why Budgeting Matters</strong><br />
+        A budget is a game plan for your money. It gives you a clear path for spending, saving, and achieving your financial goals. Without a plan, overspending becomes inevitable and saving — nearly impossible.
+      </p>
+      <p>
+        <strong>How to Create a Simple Budget</strong><br />
+        1. List your net monthly income from all sources.<br />
+        2. Track all your expenses for a month: start with fixed bills, then variable spends like eating out and entertainment.<br />
+        3. Group your expenses into “needs” (e.g., rent, groceries), “wants” (dining out, subscriptions), and “savings/debt”.<br />
+        4. Use a method that fits your life:
+        <ul>
+          <li><em>50/30/20 Rule:</em> 50% needs, 30% wants, 20% savings or debt repayment.</li>
+          <li><em>Zero-based budgeting:</em> Assign every rupee/dollar a job until nothing is left unallocated.</li>
+          <li><em>Envelope/Cash Stuffing:</em> Withdraw cash and divide it by spending category.</li>
+          <li><em>Apps &amp; Digital Tools:</em> Try Mint, YNAB, or Walnut for auto-tracking and reminders.</li>
+        </ul>
+      </p>
+      <p>
+        <strong>Budgeting Tips for Success</strong>
+        <ul>
+          <li>Make your budget realistic — over-tightening leads to burnout.</li>
+          <li>Build “fun money” in for leisure and little joys, guilt-free.</li>
+          <li>Review your spending and adjust categories every month.</li>
+          <li>Automate bills and savings transfers to avoid missed goals.</li>
+        </ul>
+      </p>
+    </article>
+
+    <article class="blog-post">
+      <h4>Part 2: Smart Saving — Building a Strong Safety Net</h4>
+      <p>
+        <strong>The Emergency Fund</strong><br />
+        Life is unpredictable. Job loss, medical expense, or even a broken fridge can strike when you least expect. Build an emergency fund with 3–6 months’ living costs to ensure you survive tough times without going into debt.
+      </p>
+      <p>
+        <strong>How Much To Save?</strong><br />
+        Start with at least 1 month’s expenses and build up over time. Once your emergency fund is set, dedicate money towards bigger life goals — a dream vacation, wedding, home, or retirement.
+      </p>
+      <p>
+        <strong>High-Impact Saving Hacks</strong>
+        <ul>
+          <li><em>Pay Yourself First:</em> Treat savings as non-negotiable; automate transfers to a separate account on salary day.</li>
+          <li><em>Audit Recurring Expenses:</em> Cancel unused subscriptions; switch to more affordable plans.</li>
+          <li><em>Expose Hidden Spending:</em> Small daily purchases add up! Track them and identify cutback areas.</li>
+          <li><em>Use Cashbacks &amp; Offers:</em> Shop during sales and use cashback apps for additional savings.</li>
+        </ul>
+      </p>
+    </article>
+
+    <article class="blog-post">
+      <h4>Part 3: Investing — Making Your Money Work For You</h4>
+      <p>
+        <strong>Understanding Investment Vehicles</strong><br />
+        <ul>
+          <li><strong>Stocks:</strong> Ownership in companies, with the potential for high returns and higher risk.</li>
+          <li><strong>Mutual Funds &amp; ETFs:</strong> Professionally managed collection of stocks/bonds for instant diversification.</li>
+          <li><strong>Fixed Deposits &amp; Bonds:</strong> Lower risk, fixed returns — good for capital safety.</li>
+          <li><strong>Gold &amp; Real Estate:</strong> Great for hedging against inflation and long-term wealth creation.</li>
+        </ul>
+      </p>
+      <p>
+        <strong>The Power of Compound Interest</strong><br />
+        Your money earns interest, and that interest itself earns interest — leading to exponential growth over time.
+      </p>
+      <p>
+        <strong>Key Investment Principles</strong>
+        <ul>
+          <li>Start early — even tiny regular investments grow big over years.</li>
+          <li>Don’t chase “get rich quick” schemes. Consistency and patience win.</li>
+          <li>Review and rebalance your portfolio annually to match your goals &amp; risk tolerance.</li>
+          <li>Never put all your eggs in one basket — diversify!</li>
+        </ul>
+      </p>
+    </article>
+
+    <article class="blog-post">
+      <h4>Part 4: Debt — The Good, The Bad, and the Dangerous</h4>
+      <p>
+        <strong>Good Debt</strong> is used to invest in assets that grow in value (e.g., a student loan, home loan).
+        <br>
+        <strong>Bad Debt</strong> comes from overusing credit cards or high-interest personal loans for things that don’t grow in worth.
+      </p>
+      <p>
+        <strong>Repayment Strategies</strong>
+        <ul>
+          <li><em>Debt Snowball:</em> Pay off your smallest debts first for quick wins and motivation.</li>
+          <li><em>Debt Avalanche:</em> Prioritize the highest-interest debt to save the most money over time.</li>
+          <li>Always pay more than the minimum due, and avoid late fees at all costs.</li>
+          <li>Seek professional help if debt is unmanageable — there’s no shame in building a plan for freedom.</li>
+        </ul>
+      </p>
+    </article>
+
+    <article class="blog-post">
+      <h4>Part 5: Real Stories — Inspiration From Everyday Investors</h4>
+      <p>
+        <strong>Ramesh: From Zero Savings to Freedom</strong><br />
+        Ramesh, a software professional, began putting away ₹5,000 every month in mutual funds, avoided “lifestyle inflation,” and stuck to his plan. With steady compounding, he built wealth and reached financial independence before 45.
+      </p>
+      <p>
+        <strong>Priya: Turning Debt Into Wealth</strong><br />
+        Facing four credit cards maxed out, Priya used the avalanche method and strict monthly budgeting. Once debt-free, she started SIPs (Systematic Investment Plans) — today she’s on track for a worry-free future.
+      </p>
+      <p>
+        <strong>Key Takeaways From Real Journeys</strong>
+        <ul>
+          <li>It’s not how much you make, but how much you keep and invest, that counts.</li>
+          <li>Consistency always beats high-risk bets.</li>
+          <li>Start early — but it’s never too late to begin.</li>
+          <li>Track your spending, and let your money work for you.</li>
+        </ul>
+      </p>
+    </article>
+
+    <article class="blog-post">
+      <h4>Bonus: Deep Dive — Making Your First Budget (Step-by-Step)</h4>
+      <p>
+        <strong>Step 1: Know Your Numbers.</strong> List all income streams and every monthly expense—no matter how small. Use a notebook, spreadsheet, or a budgeting app.
+      </p>
+      <p>
+        <strong>Step 2: Categorize.</strong> Group your spending into Needs (rent, groceries, bills), Wants (shopping, eating out), and Savings/Investments. Add up each column.
+      </p>
+      <p>
+        <strong>Step 3: Set Targets.</strong> Assign a fixed percentage or amount to each group using any of the methods above.  
+      </p>
+      <p>
+        <strong>Step 4: Track and Adjust.</strong> Every week, review your real spending against your plan. Tweak next month to hit your savings goal!
+      </p>
+      <p>
+        <em>Remember: Budgeting is not about restriction — it’s about control and peace of mind.</em>
+      </p>
+    </article>
+  </div>
+</section>
+    
+  </main>
+
   <script src="script.js"></script>
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle-btn');
+    const themeIcon = themeToggle.querySelector('.theme-icon');
+    const themeText = themeToggle.querySelector('.theme-text');
+
+    const applyTheme = theme => {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (theme === 'dark') {
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light';
+      } else {
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark';
+      }
+    };
+
+    // Initialize
+    const saved = localStorage.getItem('theme') || 'light';
+    applyTheme(saved);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  </script>
 </body>
 </html>
