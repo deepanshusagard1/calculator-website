@@ -1,103 +1,176 @@
-// === Tab Switching Logic ===
-const ciSection = document.getElementById("compound-interest-section");
-const emiSection = document.getElementById("emi-calculator-section");
-const currencySection = document.getElementById("currency-converter-section");
+"use strict";
 
-document.getElementById("compound-interest-tab").addEventListener("click", () => {
-  showTab("compound-interest");
-});
-document.getElementById("emi-tab").addEventListener("click", () => {
-  showTab("emi");
-});
-document.getElementById("currency-converter-tab").addEventListener("click", () => {
-  showTab("currency-converter");
-});
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM utility shortcuts
+  const $  = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-function showTab(tabName) {
-  ciSection.style.display = tabName === "compound-interest" ? "block" : "none";
-  emiSection.style.display = tabName === "emi" ? "block" : "none";
-  currencySection.style.display = tabName === "currency-converter" ? "block" : "none";
-
-  document.getElementById("compound-interest-tab").classList.toggle("active-tab", tabName === "compound-interest");
-  document.getElementById("emi-tab").classList.toggle("active-tab", tabName === "emi");
-  document.getElementById("currency-converter-tab").classList.toggle("active-tab", tabName === "currency-converter");
-}
-
-// === Compound Interest Calculator ===
-document.getElementById("calculate-interest-btn").addEventListener("click", () => {
-  const principal = parseFloat(document.getElementById("principal").value);
-  const monthlyDeposit = parseFloat(document.getElementById("monthly-deposit").value);
-  const rate = parseFloat(document.getElementById("rate").value) / 100;
-  const timesCompounded = parseInt(document.getElementById("times-compounded").value);
-  const years = parseInt(document.getElementById("years").value);
-
-  if (isNaN(principal) || isNaN(monthlyDeposit) || isNaN(rate) || isNaN(timesCompounded) || isNaN(years)) {
-    document.getElementById("result-interest").textContent = "Please enter valid input values.";
-    return;
-  }
-
-  // Compound interest on initial principal
-  let futureValue = principal * Math.pow(1 + rate / timesCompounded, timesCompounded * years);
-  const currency = document.getElementById("ci-currency").value;
-
-  // Future value of monthly deposits
-  const monthlyRate = rate / 12;
-  let totalDeposits = 0;
-  for (let i = 1; i <= years * 12; i++) {
-    totalDeposits += monthlyDeposit * Math.pow(1 + monthlyRate, i);
-  }
-
-  futureValue += totalDeposits;
-  document.getElementById("result-interest").textContent =
-  `Future Value: ${futureValue.toFixed(2)} ${currency}`;
-});
-
-// === EMI Calculator ===
-document.getElementById("calculate-emi-btn").addEventListener("click", () => {
-  const loanAmount = parseFloat(document.getElementById("loan-amount").value);
-  const annualRate = parseFloat(document.getElementById("annual-rate").value) / 100;
-  const loanTenure = parseInt(document.getElementById("loan-tenure").value);
-
-  if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(loanTenure)) {
-    document.getElementById("result-emi").textContent = "Please enter valid input values.";
-    return;
-  }
-
-  const monthlyRate = annualRate / 12;
-  const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanTenure)) /
-              (Math.pow(1 + monthlyRate, loanTenure) - 1);
-
-  document.getElementById("result-emi").textContent = `EMI (Per Month): ${emi.toFixed(2)}`;
-});
-
-// === Currency Converter (Mock Rates) ===
-document.getElementById("convert-currency-btn").addEventListener("click", () => {
-  const amount = parseFloat(document.getElementById("amount").value);
-  const fromCurrency = document.getElementById("from-currency").value;
-  const toCurrency = document.getElementById("to-currency").value;
-
-  if (isNaN(amount)) {
-    document.getElementById("converted-amount").textContent = "Please enter a valid amount.";
-    return;
-  }
-
-  // Mock exchange rates relative to USD
-  const exchangeRates = {
-    USD: 1,
-    EUR: 0.885,
-    INR: 84.530,
-    GBP: 0.753,
-    AUD: 1.551
+  // ---------- 1. Section Navigation ----------
+  const navButtons = $$(".nav-btn");
+  const sections = {
+    "calculator-section": $("#calculator-section"),
+    "blog-section":       $("#blog-section")
   };
 
-  if (!exchangeRates[fromCurrency] || !exchangeRates[toCurrency]) {
-    document.getElementById("converted-amount").textContent = "Unsupported currency.";
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      navButtons.forEach(b => b.classList.remove("active-tab"));
+      btn.classList.add("active-tab");
+      Object.values(sections).forEach(sec => sec.classList.add("hidden"));
+      sections[btn.dataset.section].classList.remove("hidden");
+    });
+  });
+
+  // ---------- 2. Calculator Tab Switching ----------
+  const calcTabs = $$(".calc-tab");
+  const calculators = {
+    "compound-interest": $("#compound-interest"),
+    "emi":               $("#emi"),
+    "currency":          $("#currency")
+  };
+
+  calcTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      calcTabs.forEach(t => t.classList.remove("active-tab"));
+      tab.classList.add("active-tab");
+      Object.values(calculators).forEach(c => c.classList.remove("active-calc"));
+      calculators[tab.dataset.calc].classList.add("active-calc");
+    });
+  });
+
+  // ---------- 3. Helpers ----------
+  const formatCurrency = (val, cur) =>
+    val.toLocaleString(undefined, {
+      style: "currency",
+      currency: cur,
+      maximumFractionDigits: 2
+    });
+
+  const showResult = (el, msg) => {
+    el.textContent = msg;
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.classList.add("show");
+  };
+
+  const setValidation = (input, ok) => {
+    input.classList.toggle("input-valid", ok);
+    input.classList.toggle("input-invalid", !ok);
+  };
+
+  const isPositive = n => Number.isFinite(n) && n >= 0;
+
+  // ---------- 4. Compound Interest Calculator ----------
+  $("#calculate-interest-btn").addEventListener("click", () => {
+    const P = parseFloat($("#principal").value);
+    const M = parseFloat($("#monthly-deposit").value);
+    const R = parseFloat($("#rate").value);
+    const N = parseFloat($("#times-compounded").value);
+    const Y = parseFloat($("#years").value);
+    const cur = $("#ci-currency").value;
+    const resEl = $("#result-interest");
+
+    const inputs = [
+      [$("#principal"),        isPositive(P) && P > 0],
+      [$("#monthly-deposit"),  isPositive(M)],
+      [$("#rate"),             isPositive(R) && R > 0],
+      [$("#times-compounded"), isPositive(N) && N > 0],
+      [$("#years"),            isPositive(Y) && Y > 0]
+    ];
+    let valid = true;
+    inputs.forEach(([inp, ok]) => { setValidation(inp, ok); valid &&= ok; });
+    if (!valid) {
+      showResult(resEl, "⚠️ Please correct highlighted fields.");
+      return;
+    }
+
+    const r = R / 100;
+    const t = Y;
+    const factor = Math.pow(1 + r / N, N * t);
+    const FV =
+      P * factor +
+      M * ((factor - 1) / (r / N)) * (1 + r / N);
+    showResult(resEl, `Future Value: ${formatCurrency(FV, cur)}`);
+  });
+
+  // ---------- 5. EMI Calculator ----------
+  $("#calculate-emi-btn").addEventListener("click", () => {
+    const L = parseFloat($("#loan-amount").value);
+    const R = parseFloat($("#annual-rate").value);
+    const T = parseInt($("#loan-tenure").value, 10);
+    const resEl = $("#result-emi");
+
+    const inputs = [
+      [$("#loan-amount"), isPositive(L) && L > 0],
+      [$("#annual-rate"), isPositive(R) && R > 0],
+      [$("#loan-tenure"), Number.isInteger(T) && T > 0]
+    ];
+    let valid = true;
+    inputs.forEach(([inp, ok]) => { setValidation(inp, ok); valid &&= ok; });
+    if (!valid) {
+      showResult(resEl, "⚠️ Please correct highlighted fields.");
+      return;
+    }
+
+    const monthlyRate = (R / 100) / 12;
+    const emi =
+      L * (monthlyRate * Math.pow(1 + monthlyRate, T)) /
+      (Math.pow(1 + monthlyRate, T) - 1);
+
+    showResult(resEl, `Monthly EMI: ${formatCurrency(emi, "INR")}`);
+  });
+
+  // ---------- 6. Currency Converter ----------
+  const exchangeRates = {
+    USD: { INR: 83,  EUR: 0.92,  GBP: 0.79,  AUD: 1.5,   USD: 1 },
+    INR: { USD: 0.012, EUR: 0.011, GBP: 0.0095, AUD: 0.018, INR: 1 },
+    EUR: { USD: 1.09, INR: 90, GBP: 0.86, AUD: 1.64, EUR: 1 },
+    GBP: { USD: 1.27, INR: 105, EUR: 1.16, AUD: 1.92, GBP: 1 },
+    AUD: { USD: 0.66, INR: 54,  EUR: 0.61,  GBP: 0.52,  AUD: 1 }
+  };
+
+  $("#convert-currency-btn").addEventListener("click", () => {
+    const amt  = parseFloat($("#amount").value);
+    const from = $("#from-currency").value;
+    const to   = $("#to-currency").value;
+    const resEl = $("#converted-amount");
+
+    setValidation($("#amount"), isPositive(amt) && amt > 0);
+    if (!isPositive(amt) || amt <= 0) {
+      showResult(resEl, "⚠️ Enter a valid amount.");
+      return;
+    }
+
+    const converted = amt * exchangeRates[from][to];
+    showResult(resEl, `Converted Amount: ${formatCurrency(converted, to)}`);
+  });
+
+  // ---------- 7. Theme Toggle (Light ↔ Dark) with localStorage ----------
+  const themeBtn  = $("#theme-toggle-btn");
+  if (!themeBtn) {
+    console.warn('Theme toggle button not found on page!');
     return;
   }
+  const themeIcon = $(".theme-icon", themeBtn);
+  const themeTxt  = $(".theme-text", themeBtn);
 
-  const amountInUSD = amount / exchangeRates[fromCurrency];
-  const convertedAmount = amountInUSD * exchangeRates[toCurrency];
+  function applyTheme(theme) {
+    // Set on <html> only!
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    if (themeIcon && themeTxt) {
+      themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+      themeTxt.textContent  = theme === "dark" ? "Light" : "Dark";
+    }
+  }
 
-  document.getElementById("converted-amount").textContent =
-    `${amount} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
+  // Ensure correct theme on load
+  const savedTheme = localStorage.getItem("theme") || "light";
+  applyTheme(savedTheme);
+
+  themeBtn.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+  });
 });
