@@ -61,38 +61,55 @@ document.addEventListener("DOMContentLoaded", () => {
   const isPositive = n => Number.isFinite(n) && n >= 0;
 
   // ---------- 4. Compound Interest Calculator ----------
-  $("#calculate-interest-btn").addEventListener("click", () => {
-    const P = parseFloat($("#principal").value);
-    const M = parseFloat($("#monthly-deposit").value);
-    const R = parseFloat($("#rate").value);
-    const N = parseFloat($("#times-compounded").value);
-    const Y = parseFloat($("#years").value);
-    const cur = $("#ci-currency").value;
-    const resEl = $("#result-interest");
+$("#calculate-interest-btn").addEventListener("click", () => {
+  const P = parseFloat($("#principal").value);
+  const M = parseFloat($("#monthly-deposit").value);
+  const R = parseFloat($("#rate").value);
+  const N = parseFloat($("#times-compounded").value);
+  const Y = parseFloat($("#years").value);
+  const cur = $("#ci-currency").value;
+  const resEl = $("#result-interest");
 
-    const inputs = [
-      [$("#principal"),        isPositive(P) && P > 0],
-      [$("#monthly-deposit"),  isPositive(M)],
-      [$("#rate"),             isPositive(R) && R > 0],
-      [$("#times-compounded"), isPositive(N) && N > 0],
-      [$("#years"),            isPositive(Y) && Y > 0]
-    ];
-    let valid = true;
-    inputs.forEach(([inp, ok]) => { setValidation(inp, ok); valid &&= ok; });
-    if (!valid) {
-      showResult(resEl, "⚠️ Please correct highlighted fields.");
-      return;
-    }
+  const inputs = [
+    [$("#principal"),        isPositive(P) && P >= 0],
+    [$("#monthly-deposit"),  isPositive(M) && M >= 0],
+    [$("#rate"),             isPositive(R) && R >= 0],
+    [$("#times-compounded"), isPositive(N) && N > 0],
+    [$("#years"),            isPositive(Y) && Y > 0]
+  ];
+  let valid = true;
+  inputs.forEach(([inp, ok]) => { setValidation(inp, ok); valid &&= ok; });
+  if (!valid) {
+    showResult(resEl, "⚠️ Please correct highlighted fields.");
+    return;
+  }
 
-    const r = R / 100;
-    const t = Y;
-    const factor = Math.pow(1 + r / N, N * t);
-    const FV =
-      P * factor +
-      M * ((factor - 1) / (r / N)) * (1 + r / N);
-    showResult(resEl, `Future Value: ${formatCurrency(FV, cur)}`);
-  });
+  const r = R / 100;
+  const t = Y;
 
+  // --- Principal growth ---
+  const factor = Math.pow(1 + r / N, N * t);
+  const FV_principal = P * factor;
+
+  // --- Monthly deposits (treated as annuity due, deposits at beginning of month) ---
+  // Convert compounding to monthly equivalent rate
+  const monthlyRate = Math.pow(1 + r / N, N / 12) - 1;
+  const months = t * 12;
+
+  let FV_deposits = 0;
+  if (r > 0) {
+    FV_deposits = M * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+  } else {
+    // Special case: zero interest → deposits just add up
+    FV_deposits = M * months;
+  }
+
+  // --- Total Future Value ---
+  const FV = FV_principal + FV_deposits;
+
+  showResult(resEl, `Future Value: ${formatCurrency(FV, cur)}`);
+});
+  
   // ---------- 5. EMI Calculator ----------
   $("#calculate-emi-btn").addEventListener("click", () => {
     const L = parseFloat($("#loan-amount").value);
